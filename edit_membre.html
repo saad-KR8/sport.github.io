@@ -1,0 +1,86 @@
+<?php
+
+include('conn_DB.php');
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_membre'])) {
+    $code_membre = $_POST['edit_membre'];
+
+    $sql = "SELECT * FROM membre WHERE code_membre = $code_membre";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_assoc($result);
+    } else {
+        echo "<script>alert('No member found with the given ID.');</script>";
+        header("Location: all_membres.php");
+        exit();
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_membre'])) {
+    $code_membre = $_POST['code_membre'];
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+    $adresse = $_POST['adresse'];
+    $telephone = $_POST['telephone'];
+    $date_inscri = $_POST['date_inscri'];
+
+    $sql_update = "UPDATE membre SET 
+                    nom='$nom', 
+                    prenom='$prenom', 
+                    adresse='$adresse', 
+                    telephone='$telephone', 
+                    date_inscri='$date_inscri'
+                   WHERE code_membre=$code_membre";
+
+    if (mysqli_query($conn, $sql_update)) {
+        echo "<script>alert('Member updated successfully');</script>";
+        header("Location: all_membres.php");
+        exit();
+    } else {
+        echo "<script>alert('Error updating member: " . mysqli_error($conn) . "');</script>";
+    }
+}
+
+mysqli_close($conn);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Member</title>
+    <link rel="stylesheet" href="edit_member.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+    <div class="update-box">
+        <h1 class="title" style="text-align:center;color:antiquewhite"><i class="fas fa-edit"></i> Update Member</h1><br>
+        <form method="post" action="">
+            <input type="hidden" name="code_membre" value="<?php echo isset($row['code_membre']) ? $row['code_membre'] : ''; ?>">
+            <div class="form-group">
+                <input type="text" id="nom" name="nom" value="<?php echo isset($row['nom']) ? $row['nom'] : ''; ?>" required>
+                <label for="nom">First Name</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="prenom" name="prenom" value="<?php echo isset($row['prenom']) ? $row['prenom'] : ''; ?>" required>
+                <label for="prenom">Last Name</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="adresse" name="adresse" value="<?php echo isset($row['adresse']) ? $row['adresse'] : ''; ?>" required>
+                <label for="adresse">Address</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="telephone" name="telephone" value="<?php echo isset($row['telephone']) ? $row['telephone'] : ''; ?>" required>
+                <label for="telephone">Telephone</label>
+            </div>
+            <div class="form-group">
+                <label for="date_inscri">Date of Registration</label>
+                <input type="date" id="date_inscri" name="date_inscri" value="<?php echo isset($row['date_inscri']) ? $row['date_inscri'] : ''; ?>" required>
+            </div>
+            <button type="submit" class="btn btn-primary" name="update_membre">Update</button>
+            <a href="index.php" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

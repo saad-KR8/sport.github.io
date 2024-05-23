@@ -1,0 +1,81 @@
+<?php
+include("conn_DB.php");
+include('header.php');
+
+if (isset($_POST['submit'])) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        $nom = $_POST["nom"];
+        $prenom = $_POST["prenom"];
+        $adresse = $_POST["adresse"];
+        $telephone = $_POST["telephone"];
+        $date_inscri = $_POST["date_inscri"];
+
+        $nom = mysqli_real_escape_string($conn, $nom);
+        $prenom = mysqli_real_escape_string($conn, $prenom);
+        $adresse = mysqli_real_escape_string($conn, $adresse);
+        $telephone = mysqli_real_escape_string($conn, $telephone);
+        $date_inscri = mysqli_real_escape_string($conn, $date_inscri);
+
+        $sql = "INSERT INTO membre (nom, prenom, adresse, telephone, date_inscri) 
+        VALUES ('$nom', '$prenom', '$adresse', '$telephone', '$date_inscri')";
+
+        try {
+            if ($conn->query($sql) === TRUE) {
+            } else {
+                $_SESSION['error'] = true;
+                header('Location: ' . $_SERVER['PHP_SELF']);
+                exit;
+            }
+        } catch (mysqli_sql_exception $e) {
+            $_SESSION['error'] = true;
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        }
+    } else {
+        if (isset($_SESSION['error'])) {
+            echo "<script>alert('An error occurred while inserting the data. Please try again later.');</script>";
+            unset($_SESSION['error']);
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Member</title>
+    <link rel="stylesheet" href="add_membre.css">
+</head>
+<body>
+<div class="login-box">
+    <form action="" method="post">
+        <div class="user-box">
+            <input type="text" name="nom" id="nom" required>
+            <label>Member last name</label>
+        </div>
+        <div class="user-box">
+            <input type="text" name="prenom" id="prenom" required>
+            <label>Member first name</label>
+        </div>
+        <div class="user-box">
+            <input type="text" name="adresse" id="adresse" required>
+            <label>Member address</label>
+        </div>
+        <div class="user-box">
+            <input type="text" name="telephone" id="telephone" required>
+            <label>Member telephone</label>
+        </div>
+        <div class="date">
+            <label>Joining date</label>
+            <input type="date" name="date_inscri" id="date_inscri" required>
+        </div>
+        <div>
+            <input type="submit" name="submit" value="Insert" class="insert">
+        </div>
+    </form>
+</div>
+</body>
+</html>

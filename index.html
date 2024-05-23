@@ -1,0 +1,27 @@
+<?php
+include("conn_DB.php");
+include("header.php");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membres</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <section class="container">
+       <div class="card" onclick="location.href='add_membre.php';">
+          <div class="card-image  car-1"></div>
+          <p>Ici vous pouvez ajouter un membre !</p>   
+       </div>
+       <div class="card" onclick="location.href='member.php';">
+          <div class="card-image car-2"></div>
+          <p>Ici vous pouvez voir tous les Membres !</p>
+       </div>
+  </section>
+</body>
+</html>
